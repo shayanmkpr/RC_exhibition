@@ -1,42 +1,42 @@
-#Model Architecture and Node characteristics
+# Heterogeneous Damped Harmonic Oscillator Recurrent Neural Networks (RC-HORNN)
 
-The reservoir includes DHO nodes that are connected to each other and to themselves. These connections
-have been initialized randomly. The input is given to each node via a weighted connection, and the outputs
-are assigned to 10 nodes representing the 10 different classes of the dataset.
-In the following equations, the dynamics of the reservoir are introduced:
-I rec (t) = Whhy(t) + bhh + v · x(t)
-Iext (t) = Wihs(t) + bih
-And the following equations explain the dynamic of each node in this reservoir.
-xt+1 = xt + hyt+1
-(
- )
-1
-yt+1 = yt + h[α · tanh
- √ Irec (t) + Iext (t) − 2γ · yt − ω 2 · xt]
-n
-Each node has its own values of α, γ, and ω. This variability in parameters introduces heterogeneity to
-the model. To achieve this, each node’s parameters were randomly distributed around a central value derived
-from experiences with the homogeneous network. A deviation of 0.1 from the central value was assigned to
-each node’s parameters.
-The following graphs illustrate how these parameters have been assigned for 16 nodes:
+This repository contains the implementation of a Reservoir Computing model using Damped Harmonic Oscillator (DHO) nodes for processing sequential data. The RC-HORNN model is designed to efficiently handle temporal information with dynamic reservoir states and supports training via both **Backpropagation Through Time (BPTT)** and **Hebbian Learning**.
 
-#Training
+## Model Description
 
-For the training of this model, two major approaches has been implemented.
-• First the input and output layers of the model where trained using Back propagation through time
-(BPTT), while the reservoir had fixed weights that were initially assigned randomly.
-• Second, while updating the input and output weights as explained in the previous training approach, the
-hidden weights of the reservoir, which were constant in the previous training method, will be updated
-according the the Hebbian Rule.
+The RC-HORNN consists of:
+- **Reservoir**: A collection of DHO nodes with heterogeneous characteristics. Each node's dynamics are defined by the following equations:
 
-The hebbian learning has been implemented according to the following equation,
-∆Wij = σλh aij r(xi(t), xj (t))
-Where
-∑n
-i=1(xi − x)(yi − y)
-r = √∑n
- √∑n
-i=1 (xi − x)
-2
- i=1 (yi − y)
-2
+    $$I_{\text{rec}}(t) = W_{\text{hh}} y(t) + b_{\text{hh}} + v \cdot x(t)$$
+
+    $$I_{\text{ext}}(t) = W_{\text{ih}} s(t) + b_{\text{ih}}$$
+
+    $$x_{t+1} = x_t + h y_{t+1}$$
+
+    $$y_{t+1} = y_t + h \left[ \alpha \cdot \tanh\left(\frac{1}{\sqrt{n}} I_{\text{rec}}(t) + I_{\text{ext}}(t)\right) - 2\gamma \cdot y_t - \omega^2 \cdot x_t \right]$$
+
+    - \(x_t\): Node states
+    - \(y_t\): Derivative of node states
+    - \(\alpha, \gamma, \omega\): Node-specific parameters for dynamics
+
+- **Input Layer**: Provides weighted connections to each node in the reservoir.
+- **Output Layer**: Maps the reservoir states to the output predictions.
+
+## Training Methods
+
+### 1. Backpropagation Through Time (BPTT)
+- **Description**: The input and output layers are trained using BPTT, while the reservoir weights remain fixed.
+- **Process**:
+  1. Sequential data is fed to the model step by step.
+  2. Cross-entropy loss is computed between the predicted and true labels.
+  3. Gradients are propagated back through the time steps to update input-to-hidden (\(W_{\text{ih}}\)) and hidden-to-output (\(W_{\text{ho}}\)) weights.
+
+### 2. Hebbian Learning with BPTT
+- **Description**: In addition to BPTT for the input and output layers, the reservoir's hidden weights (\(W_{\text{hh}}\)) are updated using Hebbian learning.
+- **Hebbian Rule**:
+    $$\Delta W_{ij} = \sigma \lambda h a_{ij} r(x_i(t), x_j(t))$$
+    
+    Where:
+    - \(r(x_i, x_j)\): Pearson correlation between node states \(x_i\) and \(x_j\)
+    - \(a_{ij}\): Active connection condition based on thresholds
+    - \(\sigma\): Scaling factor for Hebbian learning
