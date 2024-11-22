@@ -1,5 +1,16 @@
-# Heterogeneous Damped Harmonic Oscillator Recurrent Neural Networks (RC-HORNN)
+# This Repository is for Exhibition Purposes Only
 
+This repository is not intended to represent the official project. It is a showcase of the foundational experiments, testing, and initial implementations that contributed to the development of the current project. 
+
+Please note:
+- The project is still under development and not yet complete.
+- The finalized code and methodologies will be made publicly available only after the official project is published.
+- This repository does not include the direct methodologies or complete implementations used in the official project.
+
+It is solely meant to provide an overview of the preliminary steps and ideas that inspired the ongoing work.
+
+
+# Heterogeneous Damped Harmonic Oscillator Reservoir Computing
 This repository contains the implementation of a Reservoir Computing model using Damped Harmonic Oscillator (DHO) nodes for processing sequential data. The RC-HORNN model is designed to efficiently handle temporal information with dynamic reservoir states and supports training via both **Backpropagation Through Time (BPTT)** and **Hebbian Learning**.
 
 ## Model Description
